@@ -28,38 +28,35 @@ const createPost = (request: any, response: any) => {
         if (error) {
             throw error
         }
-        response.status(201).send(`Post added`)
+        response.status(201).send('Post added')
     })
 }
 
 const updatePost = (request: any, response: any) => {
-    const id = request.params;
+    const id = request.params
 
-    const { title, body, date } = request.body;
+    const { title, body, date } = request.body
 
     client.query("UPDATE blog_db SET title=($1), body=($2), date=($3) WHERE id=($4)",
-    [title, body, date, id]),
-    (error: any, results: any) => {
+    [title, body, date, id], (error: any, results: any) => {
         if (error) {
             throw error
         }
-        response.status(200).redirect('/posts');
-    });
+        response.status(200).redirect('/posts')
+    })
 }
 
 const deletePost = (request: any, response: any) => {
     const id = request.params;
 
-    client.query("DELETE FROM blog_db WHERE id=($1)", [id]),
+    client.query("DELETE FROM blog_db WHERE id=($1)", [id],
     (error: any, results: any) => {
         if (error) {
             throw error
         }
-        response.status(200).redirect('/posts');
-    });
+        response.status(200).redirect('/posts')
+    })
 }
-
-
 
 // // export function getPosts(): any {
 //     /*
@@ -72,5 +69,5 @@ const deletePost = (request: any, response: any) => {
 // }
 
 module.exports = {
-    getPosts, getPostById, createPost
+    getPosts, getPostById, createPost, updatePost, deletePost
 }
