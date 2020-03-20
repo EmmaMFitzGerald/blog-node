@@ -1,21 +1,26 @@
 import * as express from "express";
 
-const bodyParser = require('body-parser')
+import {
+    getPostsHandler,
+    createPostHandler,
+    updatePostHandler,
+    deletePostHandler,
+    getPostByIdHandler,
+} from "./handlers/blog.handlers";
 
 const app = express();
 
-const db = require("./logic/business.ts")
-
-app.use(bodyParser.json())
+// express.json should parse JSON into the body of the
+// request for you
+app.use(express.json());
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
-app.get('/posts', db.getPosts)
-app.post('/posts', db.createPost)
-app.get('/posts/:id', db.getPostById)
-app.put('/posts/:id', db.updatePost)
-app.delete('/posts/:id', db.deletePost)
+app.get("/posts", getPostsHandler);
+app.post("/posts", createPostHandler);
+app.get("/posts/:id", getPostByIdHandler);
+app.put("/posts/:id", updatePostHandler);
+app.delete("/posts/:id", deletePostHandler);
 
 const port = 3000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-

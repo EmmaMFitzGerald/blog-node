@@ -1,73 +1,91 @@
-const client = require('./helpers/database.helpers.ts')
+import { runQuery } from "../helpers/database.helper";
 
-const getPosts = (request: any, response: any) => {
-    client.query('SELECT * FROM blog_db', (error: any, results: any) => {
-        if (error) {
-            throw error
-        }
-        response.status(200).json(results.rows)
-    })
-}
+export const getPosts = async (): Promise<any> => {
+    return await runQuery("SELECT * FROM blog_db");
+};
 
-const getPostById = (request: any, response: any) => {
-    const id = request.params;
+// export const getPostById = async (
+//     request: any,
+//     response: any
+// ): Promise<any> => {
+//     const id = request.params;
 
-    client.query('SELECT * FROM blog_db WHERE id = $1', [id], (error: any, results: any) => {
-        if (error) {
-            throw error
-        }
-        response.status(200).json(results.rows)
-    })
-}
+//     const rows = await runQuery("SELECT * FROM blog_db WHERE id = $1", [id]);
 
-const createPost = (request: any, response: any) => {
-    const { title, body, date } = request.body 
+//     response.status(200).json(rows);
+// };
 
-    client.query('INSERT INTO blog_db (title, body, date) VALUES ($1, $2, $3)',
-    [title, body, date], (error: any, results: any) => {
-        if (error) {
-            throw error
-        }
-        response.status(201).send('Post added')
-    })
-}
+export const getPostById = async (id: number, response: any): Promise<any> => {
 
-const updatePost = (request: any, response: any) => {
-    const id = request.params
+    const rows = await runQuery("SELECT * FROM blog_db WHERE id = $1", [id]);
 
-    const { title, body, date } = request.body
+    response.status(200).json(rows);
+};
 
-    client.query("UPDATE blog_db SET title=($1), body=($2), date=($3) WHERE id=($4)",
-    [title, body, date, id], (error: any, results: any) => {
-        if (error) {
-            throw error
-        }
-        response.status(200).redirect('/posts')
-    })
-}
 
-const deletePost = (request: any, response: any) => {
-    const id = request.params;
+export const createPost = async (
+    title: string,
+    body: string,
+    date: Date
+): Promise<boolean> => {
+    try {
+        await runQuery(
+            "INSERT INTO blog_db (title, body, date) VALUES ($1, $2, $3)",
+            [title, body, date]
+        );
 
-    client.query("DELETE FROM blog_db WHERE id=($1)", [id],
-    (error: any, results: any) => {
-        if (error) {
-            throw error
-        }
-        response.status(200).redirect('/posts')
-    })
-}
+        return true;
+    } catch (err) {
+        return false;
+    }
+};
 
-// // export function getPosts(): any {
-//     /*
-//         1. A db connection/Client
-//         2. Run the SQL query
-//         3. return the result
-//     */
+export const updatePost = async (
+    id: number,
+    title: string,
+    body: string,
+    date: Date
+): Promise<boolean> => {
+    try {
+        await runQuery(
+            "UPDATE blog_db SET title=($1), body=($2), date=($3) WHERE id=($4)",
+            [title, body, date, id]
+        );
 
-//     // runQuery("SELECT * FROM public.blog_db");
-// }
+        return true;
+    } catch (err) {
+        return false;
+    }
+};
 
-module.exports = {
-    getPosts, getPostById, createPost, updatePost, deletePost
-}
+// export const updatePost = async (request: any, response: any): Promise<any> => {
+//     const id = request.params;
+
+//     // request.body is null at this point:
+//     const { title, body, date } = request.body;
+
+//     const rows = await runQuery(
+//         "UPDATE blog_db SET title=($1), body=($2), date=($3) WHERE id=($4)",
+//         [title, body, date, id]
+//     );
+
+//     response.status(200).json(rows);
+// };
+
+export const deletePost = async (id: number, response: any): Promise<any> => {
+    try {
+        await runQuery("DELETE FROM blog_db WHERE id=($1)", [id]);
+
+        return true;
+    } catch (err) {
+        return false;
+    }
+};
+
+// export const deletePost = async (request: any, response: any): Promise<any> => {
+//     const id = request.params;
+
+//     await runQuery("DELETE FROM blog_db WHERE id=($1)", [id]);
+
+//     response.status(200).redirect("/posts");
+// };
