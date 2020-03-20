@@ -1,7 +1,7 @@
 import { runQuery } from "../helpers/database.helper";
 
 export const getPosts = async (): Promise<any> => {
-    return await runQuery("SELECT * FROM blog_db");
+   return await runQuery("SELECT * FROM blog_db");
 };
 
 // export const getPostById = async (
