@@ -1,7 +1,7 @@
 import { runQuery } from "../helpers/database.helper";
 
 export const getPosts = async (): Promise<any> => {
-   return await runQuery("SELECT * FROM blog_db");
+    return runQuery("SELECT * FROM blog_db");
 };
 
 // export const getPostById = async (
@@ -15,13 +15,9 @@ export const getPosts = async (): Promise<any> => {
 //     response.status(200).json(rows);
 // };
 
-export const getPostById = async (id: number, response: any): Promise<any> => {
-
-    const rows = await runQuery("SELECT * FROM blog_db WHERE id = $1", [id]);
-
-    response.status(200).json(rows);
+export const getPostById = async (id: number): Promise<any> => {
+    return runQuery("SELECT * FROM blog_db WHERE id = $1", [id]);
 };
-
 
 export const createPost = async (
     title: string,
@@ -72,7 +68,7 @@ export const updatePost = async (
 //     response.status(200).json(rows);
 // };
 
-export const deletePost = async (id: number, response: any): Promise<any> => {
+export const deletePost = async (id: number): Promise<any> => {
     try {
         await runQuery("DELETE FROM blog_db WHERE id=($1)", [id]);
 

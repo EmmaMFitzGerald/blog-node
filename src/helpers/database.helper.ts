@@ -1,6 +1,5 @@
 // Client connection stuff...
 import { Client } from "pg";
-import { runInNewContext } from "vm";
 
 function getClient(): Client {
     const client = new Client({
@@ -27,7 +26,6 @@ export async function runQuery(
 
         return result.rows;
     } catch (err) {
-    
         console.error(err);
 
         return undefined;

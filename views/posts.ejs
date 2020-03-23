@@ -1,3 +1,9 @@
 <h1>Emma's posts</h1>
-
-<h2><%= posts[1].title %></h2>
+<ul>
+    <% for (let i =1; i < posts.length;  i++ ) { %>
+        <li>  <%= posts[i].title %> </li>
+        <%= posts[i].id %> 
+       <li><form method="POST" action="/posts/{{posts[i].id}}?_method=DELETE">
+        <button type="submit">Delete</button></form></li>
+    <% } %>
+</ul>

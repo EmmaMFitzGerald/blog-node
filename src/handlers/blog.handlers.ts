@@ -32,13 +32,14 @@ export const getPostByIdHandler = async (
     try {
         const id = request.params.id;
 
-        const rows = await getPostById(id, response);
-        response.status(200).json({
+        const rows = await getPostById(id);
+
+        return response.status(200).json({
+            data: rows,
             success: true,
-            // data: rows,
         });
     } catch (err) {
-        response.status(500).json({
+        return response.status(500).json({
             success: false,
             errorMessage: err.toString(),
         });
@@ -89,7 +90,7 @@ export const updatePostHandler = async (
             });
         }
     } catch (err) {
-        response.status(500).json({
+        return response.status(500).json({
             success: false,
             errorMessage: err.toString(),
         });
@@ -103,7 +104,7 @@ export const deletePostHandler = async (
     try {
         const id = request.params.id;
 
-        const isSuccessful = await deletePost(id, response);
+        const isSuccessful = await deletePost(id);
 
         if (isSuccessful) {
             response.status(200).json({
