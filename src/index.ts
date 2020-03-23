@@ -13,6 +13,7 @@ import {
     getPostById,
     createPost,
     deletePost,
+    updatePost,
 } from "./logic/business";
 
 const app = express();
@@ -37,10 +38,6 @@ app.get("/posts", async (req, res) => {
     res.render("posts", { posts });
 });
 
-app.get("/posts/new", (req, res) => {
-    res.render("createPost");
-})
-
 app.get("/posts/:id", async (req, res) => {
     const id = Number(req.params.id);
     const post = await getPostById(id);
@@ -63,6 +60,15 @@ app.delete("/posts/:id", async (req, res) => {
     await deletePost(id);
     res.redirect("/posts");
 });
+
+app.put("/posts/:id", async (req, res) => {
+    const id = Number(req.params.id);
+    const { title, body } = req.body;
+    const date = new Date();
+    await updatePost(id, title, body, date);
+
+    res.redirect("/posts");
+})
 
 const port = 3000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

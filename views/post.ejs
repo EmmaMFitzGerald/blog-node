@@ -1,2 +1,21 @@
 <h1><%= post[0].title %></h1>
 <h2><%= post[0].body %></h2>
+
+<h1>Edit Post</h1>
+<form method="POST" action="/posts/<%=post[0].id%>/?_method=PUT">
+				<label for="title">Title</label>
+				<input 
+					type="text" 
+					id="title" 
+					name="title"
+					value="<%=post[0].title%>"
+				/>
+				<label for="body">Post</label>
+				<input 
+					type="text"
+					id="body" 
+					name="body"
+					value="<%=post[0].body%>"
+                />
+    <button type="submit">Save</button>      
+</form>
