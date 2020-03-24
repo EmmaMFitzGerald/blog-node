@@ -1,7 +1,7 @@
 import { runQuery } from "../helpers/database.helper";
 
 export const getPosts = async (): Promise<any> => {
-    return runQuery("SELECT * FROM blog_db");
+    return runQuery("SELECT * FROM blog_db ORDER BY date ASC");
 };
 
 // export const getPostById = async (

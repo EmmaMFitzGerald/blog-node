@@ -1,5 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New page</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <style>
+        /* body {
+            background-color: ;
+        } */
+    </style>
+</head>
+<body>
+<!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+
+</script> -->
 <h1><%= post[0].title %></h1>
+<p><%= post[0].date %></p>
 <h2><%= post[0].body %></h2>
+
 
 <h1>Edit Post</h1>
 <form method="POST" action="/posts/<%=post[0].id%>/?_method=PUT">
@@ -19,3 +37,5 @@
                 />
     <button type="submit">Save</button>      
 </form>
+</body>
+</html>

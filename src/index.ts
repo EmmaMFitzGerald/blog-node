@@ -1,4 +1,5 @@
 import * as express from "express";
+import * as path from "path";
 
 import {
     getPostsHandler,
@@ -20,10 +21,19 @@ const app = express();
 import methodOverride = require("method-override");
 app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
+
+const staticDir = path.join(__dirname, "../public");
+console.log(`Static direction is: ${staticDir}`);
+
+app.use(express.static(staticDir));
+// app.use('/public', express.static('public'));
+// app.use(express.static("public"));
 // express.json should parse JSON into the body of the
 // request for you
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// import dateFormat = require('dateformat');
 // app.get("/", (req, res) => res.render("index"));
 // app.get("/", (req, res) => res.render("index"));
 
@@ -47,16 +57,13 @@ app.get("/posts/:id", async (req, res) => {
 app.post("/posts", async (req, res) => {
     const { title, body } = req.body;
     const date = new Date();
-    console.log(title, body, date);
     await createPost(title, body, date);
 
     res.redirect("/posts");
 });
 
 app.delete("/posts/:id", async (req, res) => {
-    console.log(req);
     const id = Number(req.params.id);
-    console.log(id);
     await deletePost(id);
     res.redirect("/posts");
 });
@@ -68,7 +75,7 @@ app.put("/posts/:id", async (req, res) => {
     await updatePost(id, title, body, date);
 
     res.redirect("/posts");
-})
+});
 
 const port = 3000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
