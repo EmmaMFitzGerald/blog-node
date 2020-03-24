@@ -60,6 +60,8 @@ app.post("/posts", async (req, res) => {
     await createPost(title, body, date);
 
     res.redirect("/posts");
+    // console.log(req.body);
+    // res.send("POST ")
 });
 
 app.delete("/posts/:id", async (req, res) => {
