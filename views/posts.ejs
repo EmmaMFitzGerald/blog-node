@@ -3,11 +3,16 @@
 <head>
     <title>New page</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <style>
+        #editForm {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome to Emma's Blog</h1>
     <h1>Add Post</h1>
-    <form method="POST" action="/posts" id="blogForm">
+    <form id="blogForm"></form>
                     <label for="title">Title</label>
                     <input 
                         type="text" 
@@ -22,27 +27,97 @@
                         name="body"
                         placeholder="Post"
                     />
-        <button type="submit" class="btn">Save</button>      
+        <button type="submit" class="btn" id="addPost">Save</button>      
     </form>
-    <ul>
-        <% for (let i =1 ; i < posts.length;  i++ ) { %>
-            <li><a href="/posts/<%=posts[i].id%>"><%= posts[i].title %></a> </li>
-            <%= posts[i].id %> 
-        <form method="POST" action="/posts/<%=posts[i].id%>?_method=DELETE">
-            <button type="submit" class="btn">Delete</button></form>
-        <% } %>
+
+    <ul class="blogPosts" id="listBlogPosts">
     </ul>
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('.btn').click(function(){
-               const title = $('input[name="title"]').val();
-               const body = $('input[name="body"]').val();
-               $.post('/posts', $('#blogForm').serialize())
-               .done(function(data){
-                   console.log(data);
-               })
+
+        $(document).ready(function(){
+            buildPage()
+        })
+
+        $('#listBlogPosts').on('click','.remove', function(){
+            let id = $(this).parent().data('post').id;
+
+            console.log(id)
+            $.ajax({
+                url: "/api/posts/" + id,
+                type: "DELETE",
+                contentType: "application/json",
+                data: JSON.stringify({ id: id }),
+                success: function(resp){
+                    buildPage();
+                }
+             })
+        })
+
+        $('#listBlogPosts').on('click', '.submit', function(){
+            console.log("clicked")
+            let id = $(this).parent().data('post').id
+            let title = $('#titleInput'+id).val()
+            let body = $('#bodyInput'+id).val()
+            // let body = $(this).parent().data('post').body
+            // console.log(id, title, body)
+            $.ajax({
+                url: "/api/posts/"+id,
+                type: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify({ "id": id, "title": title, "body": body }),
+                success: function(resp){
+                    console.log(resp)
+                }
+            }).done(function(data){
+                buildPage();
             })
         })
+
+        $("#addPost").on('click', function(event){
+            event.preventDefault;
+            event.stopPropagation;
+            console.log(event)
+            $.ajax({
+                url: "/api/posts",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ posts: { "title": $("#title").val(), "body": $("#body").val() }})
+            }).done(function(data){
+                buildPage();
+                removeInputFromForm("title", "body")
+            })
+        });
+
+        function buildPage(){
+            $.getJSON('/api/posts', function(data) {
+                console.log("Posts are now", data);
+
+                /* if this list is populated, empty it */
+                $('#listBlogPosts').empty();
+
+                
+                $.each(data.data, function(i, value) {
+                    let hLink = '<a href="/posts/' 
+                        + value.id + '"target="_blank" class="indivPost">'
+                        + value.title + '</a>'
+                    let editForm = '<form class="editForm"><input type="text" id="titleInput'+ value.id +'" value="' + value.title + '"/> <input type="text" id="bodyInput'+ value.id +'" value="' + value.body + '"/><span class=submit>submit</span></form>'
+                    let listNew = $('<li>' + hLink + "  " + value.body + '<span class="remove">  x</span><span class="edit">  edit</span></li>' + editForm);
+                    listNew.data('post', value)
+                    $('#listBlogPosts').append(listNew);
+                })
+            })
+        }
+                
+        const removeInputFromForm = function(input1, input2) {
+
+            // $("#theform")[0].reset();
+
+            // $(input1).val();
+            // $()
+            document.getElementById(input1).value = "";
+            document.getElementById(input2).value = "";
+        }
     </script>
 </body>

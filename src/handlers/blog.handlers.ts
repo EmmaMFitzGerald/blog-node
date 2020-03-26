@@ -31,6 +31,7 @@ export const getPostByIdHandler = async (
 ): Promise<void> => {
     try {
         const id = request.params.id;
+        console.log("reached her!", id)
 
         const rows = await getPostById(id);
 
@@ -51,13 +52,16 @@ export const createPostHandler = async (
     response: any
 ): Promise<void> => {
     try {
-        const { title, body, date } = request.body;
-
+        console.log(request.body);
+        console.log(response);
+        const { title, body } = request.body.posts;
+        const date = new Date();
         const isSuccessful = await createPost(title, body, date);
-
         if (isSuccessful) {
             response.status(200).json({
                 success: true,
+                title,
+                body,
             });
         } else {
             response.status(500).json({
@@ -78,6 +82,7 @@ export const updatePostHandler = async (
 ): Promise<void> => {
     try {
         const id = request.params.id;
+        console.log("here")
         const { title, body, date } = request.body;
         const isSuccessful = await updatePost(id, title, body, date);
         if (isSuccessful) {
@@ -103,12 +108,12 @@ export const deletePostHandler = async (
 ): Promise<void> => {
     try {
         const id = request.params.id;
-
         const isSuccessful = await deletePost(id);
 
         if (isSuccessful) {
             response.status(200).json({
                 success: true,
+                id,
             });
         } else {
             response.status(500).json({

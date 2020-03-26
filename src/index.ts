@@ -38,13 +38,19 @@ app.use(express.urlencoded({ extended: false }));
 // app.get("/", (req, res) => res.render("index"));
 
 app.get("/api/posts", getPostsHandler);
+
+// Here
+// app.post("/api/posts", createPostHandler);
+
 app.post("/api/posts", createPostHandler);
+app.delete("/api/posts/:id", deletePostHandler);
+
 app.get("/api/posts/:id", getPostByIdHandler);
 app.put("/api/posts/:id", updatePostHandler);
-app.delete("api/posts/:id", deletePostHandler);
 
 app.get("/posts", async (req, res) => {
     const posts = await getPosts();
+    // res.json(posts); giving headers error cause rendering twice
     res.render("posts", { posts });
 });
 
@@ -55,13 +61,13 @@ app.get("/posts/:id", async (req, res) => {
 });
 
 app.post("/posts", async (req, res) => {
-    const { title, body } = req.body;
+    const { title, body } = req.body.posts;
+    console.log(req.body.posts)
     const date = new Date();
-    await createPost(title, body, date);
-
-    res.redirect("/posts");
-    // console.log(req.body);
-    // res.send("POST ")
+    const post = await createPost(title, body, date);
+    console.log(post)
+    // res.redirect("/posts");
+    res.render("posts", { post });
 });
 
 app.delete("/posts/:id", async (req, res) => {
