@@ -3,7 +3,11 @@
 <head>
     <title>New page</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-
+    <style>
+        #editBtn {
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome to Emma's Blog</h1>
@@ -60,16 +64,22 @@
 
         $('#listBlogPosts').on('click','.editBtn', function(){
             let id = $(this).parent().data('post').id;
+            console.log(id)
             $('#editForm' + id).toggle();
         })
 
 
         $('#listBlogPosts').on('click', '.submit', function(){
             console.log("clicked")
-            let id = $(this).parent().data('post').id
+            let parent = $(this).parent().parent();
+            console.log("Element i'm expecting is actually", parent);
+
+
+            let id = parent.data('post').id;
+            console.log(id)
             let title = $('#titleInput'+id).val()
             let body = $('#bodyInput'+id).val()
-            
+        
             $.ajax({
                 url: "/api/posts/"+id,
                 type: "PUT",
@@ -111,7 +121,7 @@
                     let blogTitle = '<span class="showMore"><li id="blogTitle'+ value.id +'">' + value.title + '</li></span>'
                     let blogBody = '<span id="blogBody'+ value.id +'">' + value.body + '</span>'
                     let editForm = '<span class="editForm"><form id="editForm'+value.id+'"><input type="text" id="titleInput'+ value.id +'" value="' + value.title + '"/> <input type="text" id="bodyInput'+ value.id +'" value="' + value.body + '"/><span class=submit>submit</span></form></span>'
-                    let listNew = $('<span>' + blogTitle + blogBody + '<span class="remove">  x</span><span class="editBtn">  edit</span></span>' + editForm);
+                    let listNew = $('<span>' + blogTitle + blogBody + '<span class="remove"> delete</span><span class="editBtn">  edit</span></span>' + editForm);
                     listNew.data('post', value)
                     $('#listBlogPosts').append(listNew);
                     $('#listBlogPosts #editForm' + value.id).hide();
