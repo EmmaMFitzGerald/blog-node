@@ -58,10 +58,9 @@
         })
     
 
-
-
         $('#listBlogPosts').on('click','.editBtn', function(){
-            $('.editForm').toggle();
+            let id = $(this).parent().data('post').id;
+            $('#editForm' + id).toggle();
         })
 
 
@@ -111,11 +110,11 @@
                 $.each(data.data, function(i, value) {
                     let blogTitle = '<span class="showMore"><li id="blogTitle'+ value.id +'">' + value.title + '</li></span>'
                     let blogBody = '<span id="blogBody'+ value.id +'">' + value.body + '</span>'
-                    let editForm = '<form class="editForm"><input type="text" id="titleInput'+ value.id +'" value="' + value.title + '"/> <input type="text" id="bodyInput'+ value.id +'" value="' + value.body + '"/><span class=submit>submit</span></form>'
+                    let editForm = '<span class="editForm"><form id="editForm'+value.id+'"><input type="text" id="titleInput'+ value.id +'" value="' + value.title + '"/> <input type="text" id="bodyInput'+ value.id +'" value="' + value.body + '"/><span class=submit>submit</span></form></span>'
                     let listNew = $('<span>' + blogTitle + blogBody + '<span class="remove">  x</span><span class="editBtn">  edit</span></span>' + editForm);
                     listNew.data('post', value)
                     $('#listBlogPosts').append(listNew);
-                    $('.editForm').hide();
+                    $('#listBlogPosts #editForm' + value.id).hide();
                     $('#listBlogPosts #blogBody' + value.id).hide();
                 })
             })
