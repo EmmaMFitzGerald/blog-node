@@ -3,11 +3,7 @@
 <head>
     <title>New page</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <style>
-        #editForm {
-            display: none;
-        }
-    </style>
+
 </head>
 <body>
     <h1>Welcome to Emma's Blog</h1>
@@ -55,13 +51,26 @@
              })
         })
 
+        $('#listBlogPosts').on('click','.showMore', function(){
+            console.log('clicked')
+            let id = $(this).parent().data('post').id;
+            $('#listBlogPosts #blogBody' + id).toggle();
+        })
+    
+
+
+
+        $('#listBlogPosts').on('click','.editBtn', function(){
+            $('.editForm').toggle();
+        })
+
+
         $('#listBlogPosts').on('click', '.submit', function(){
             console.log("clicked")
             let id = $(this).parent().data('post').id
             let title = $('#titleInput'+id).val()
             let body = $('#bodyInput'+id).val()
-            // let body = $(this).parent().data('post').body
-            // console.log(id, title, body)
+            
             $.ajax({
                 url: "/api/posts/"+id,
                 type: "PUT",
@@ -86,7 +95,8 @@
                 data: JSON.stringify({ posts: { "title": $("#title").val(), "body": $("#body").val() }})
             }).done(function(data){
                 buildPage();
-                removeInputFromForm("title", "body")
+                $('#title').val("")
+                $('#body').val("")
             })
         });
 
@@ -99,25 +109,17 @@
 
                 
                 $.each(data.data, function(i, value) {
-                    let hLink = '<a href="/posts/' 
-                        + value.id + '"target="_blank" class="indivPost">'
-                        + value.title + '</a>'
+                    let blogTitle = '<span class="showMore"><li id="blogTitle'+ value.id +'">' + value.title + '</li></span>'
+                    let blogBody = '<span id="blogBody'+ value.id +'">' + value.body + '</span>'
                     let editForm = '<form class="editForm"><input type="text" id="titleInput'+ value.id +'" value="' + value.title + '"/> <input type="text" id="bodyInput'+ value.id +'" value="' + value.body + '"/><span class=submit>submit</span></form>'
-                    let listNew = $('<li>' + hLink + "  " + value.body + '<span class="remove">  x</span><span class="edit">  edit</span></li>' + editForm);
+                    let listNew = $('<span>' + blogTitle + blogBody + '<span class="remove">  x</span><span class="editBtn">  edit</span></span>' + editForm);
                     listNew.data('post', value)
                     $('#listBlogPosts').append(listNew);
+                    $('.editForm').hide();
+                    $('#listBlogPosts #blogBody' + value.id).hide();
                 })
             })
         }
-                
-        const removeInputFromForm = function(input1, input2) {
 
-            // $("#theform")[0].reset();
-
-            // $(input1).val();
-            // $()
-            document.getElementById(input1).value = "";
-            document.getElementById(input2).value = "";
-        }
     </script>
 </body>
